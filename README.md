@@ -3,7 +3,7 @@
 # Simple task automation using gulp
 Simple script to convert sass to css and watch js, css and html files then auto reload browser on file changes.
 
-version 2.0.0 :
+version 3.0.0 :
 - auto minify css files
 - added sourcemaps to css
 - auto minify js files
