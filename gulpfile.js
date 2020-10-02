@@ -5,7 +5,7 @@ var gulp = require('gulp'),
 var autoprefixerOptions = {
     browsers: ['last 2 versions', 'ie >= 9', 'and_chr >= 2.3']
 };
-gulp.task('sass', function () {
+gulp.task('sass', async function () {
     gulp.src('./src/scss/*.scss')
         .pipe(plugins.sourcemaps.init())
         .pipe(plugins.sass())
@@ -16,14 +16,14 @@ gulp.task('sass', function () {
         .pipe(plugins.browserSync.stream());
 });
 
-gulp.task('js', function () {
+gulp.task('js', async function () {
     gulp.src('./src/js/*.js')
         .pipe(plugins.uglify())
         .pipe(gulp.dest('./dist/js/'))
         .pipe(plugins.browserSync.stream());
 });
 
-gulp.task('index', function () {
+gulp.task('index', async function () {
     var target = gulp.src('./index.html');
     // It's not necessary to read the files (will speed up things), we're only after their paths:
     var sources = gulp.src(['./dist/**/*.js', './dist/**/*.css'], {
@@ -35,12 +35,12 @@ gulp.task('index', function () {
         .pipe(plugins.browserSync.stream());
 });
 
-gulp.task('serve', ['sass', 'js', 'index'], function () {
+gulp.task('serve', gulp.series(['sass', 'js', 'index']), function () {
     plugins.browserSync.init({
         server: "./"
     });
-    gulp.watch("./src/scss/*.scss", ['sass']);
-    gulp.watch("./src/js/*.js", ['js']);
-    gulp.watch("./*.html", ['index']);
+    gulp.watch("./src/scss/*.scss", gulp.parallel(['sass']));
+    gulp.watch("./src/js/*.js", gulp.parallel(['js']));
+    gulp.watch("./*.html", gulp.parallel(['index']));
 });
-gulp.task('default', ['serve']);
+gulp.task('default', gulp.parallel(['serve']));
